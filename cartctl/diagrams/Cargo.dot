@@ -1,0 +1,22 @@
+digraph CartCtl {
+    
+    rankdir=LR; // TB or LR
+    nodesep=1.0; // Horizontal spacing
+    ranksep=1.0; // Vertical spacing
+    //states
+    Created [shape=doublecircle ]
+    Loaded
+    SetPriority
+    Unloaded [shape=doublecircle ]
+    Terminated [shape=doublecircle ]
+    
+    //edges
+    Created -> Loaded [label="Before 60s"]
+    Created -> SetPriority [label="After 60s"]
+    Created -> Terminated [label="Invalid request"]
+
+    
+    Loaded -> Unloaded [label="Unloading"]    
+    SetPriority -> Loaded [label="Picked up"]   
+    SetPriority -> Loaded [label="After 60s, force pickup"]
+}

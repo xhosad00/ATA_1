@@ -1,0 +1,54 @@
+digraph CartStatus {
+    
+    rankdir=LR; // TB or LR
+    nodesep=0.5; // Horizontal spacing
+    ranksep=0.5; // Vertical spacing
+    //states
+    IDLE [shape=doublecircle ]
+    NORMAL
+    
+    Moving
+    Unloading
+    Loading
+    
+    "UNLOAD_ONLY (UO)"
+    "(UO) Moving"
+    "(UO) Unloading"
+    
+    //edges
+    IDLE -> NORMAL [label="Recieved first request"]
+    IDLE -> IDLE [label="No requests"]
+    
+    // NORMAL -> "UNLOAD_ONLY (UO)" [label="Has prio cargo request"]
+    NORMAL -> IDLE [label="Nothing to do"]
+    NORMAL -> Moving [label="Move to dst"]
+    NORMAL -> Loading [label="Can load here"]
+    
+    Moving -> Unloading [label="Reached Unload dst"]
+    Moving -> Moving [label="Move to dst"]
+    Moving -> Loading [label="Reached Load dst"]
+    
+    
+    Loading -> Loading  [label="Loading"]
+    Loading -> Moving  [label="Finished loading"]
+    Loading -> "UNLOAD_ONLY (UO)"  [label="Loaded priority cargo"]
+    
+    Unloading -> Loading  [label="Can pickup cargo at location"]
+    Unloading -> Moving  [label="Move to dst"]
+    Unloading -> Unloading  [label="Unloading"]
+    Unloading -> IDLE  [label="Nothing to do"]
+    
+    // "UNLOAD_ONLY (UO)" -> NORMAL [label="All prio cargo unloaded"]    
+    "UNLOAD_ONLY (UO)" -> "(UO) Moving" [label="Move to dst"]
+    "UNLOAD_ONLY (UO)" -> "(UO) Unloading" [label="Allready at dst"]
+
+    "(UO) Moving" -> "(UO) Moving" [label="Move to dst"]
+    "(UO) Moving" -> "(UO) Unloading" [label="Reached Unload dst"]
+    
+    // "(UO) Unloading" -> "UNLOAD_ONLY (UO)" [label="Finished Unloading"]
+    "(UO) Unloading" -> "(UO) Moving" [label="Move to dst"]
+    "(UO) Unloading" -> NORMAL [label="All prio cargo unloaded"]  
+    
+    
+    
+}
