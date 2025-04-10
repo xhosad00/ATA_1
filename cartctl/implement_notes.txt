@@ -1,0 +1,35 @@
+Can cargo have the same src dst?
+NOT TRUE:If request cargo is not picked up before setting UNLOAD_ONLY, it will never be picked up and will time out (since CartCtl will not pickup ANY cargo in UNLOAD_ONLY)
+
+
+find_load_there_single()
+    nepracuje s prioritou
+
+check_dead_requests()
+    maže prioritní požadavky po 120s od jejich vytvoření
+
+Cannot satisfy:
+Pokud takový materiál (prioritní) stále není naložen do další 1 minuty a vozík má volnou kapacitu, materiál se okamžitě naloží a vozík přepne do režimu pouze-vykládka
+    Nemůže se naložit pokud vozík není v danné stanici
+
+V tomto režimu (normálním) optimalizuje trasu tak, aby minimalizoval celkovou přepravní vzdálenost
+    UCS neumožňuje optimalizaci celkové trasy, vždy směřuje do nejbližší cílové zastávky
+
+Pokud je materiál pro převoz větší než jeden slot nebo je příliš těžký, bude rozdělen do více slotů
+    Sloty nemají maximální nosnost, tudíž se materiál nemůže dělit do více slotů
+
+F-01 The system shall automatically generate requests for cargo relocation between stops.
+    Neexistuje žádný automatický generátor požadavků
+
+
+***Rozpor v specifikaci***
+
+F-06 In unloading-only mode, the cart shall not perform any other loading or unloading except for priority cargo.
+    Je v rozporu se Specifikace chování:
+    V tomto režimu (prioritní) vozík ignoruje jiné požadavky na převoz a zamíří přímo k cílové zastávce prioritního materiálu
+
+***Rozpor v specifikaci***
+
+other:
+nemohou být vytvořeny dva požadavky ve stejnou chvíli
+aktuálně diagram CartStatus neumožňuje nakládání a vykládání requestu ve stejné stanici (CargoReq('A', 'A', 20, 'x')) bez přepnutí do Moving
