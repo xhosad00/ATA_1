@@ -40,11 +40,11 @@ digraph CartStatus {
 
     // UNLOAD ONLY 
     "UNLOAD_ONLY (UO)" -> "(UO) Moving" [label="Switch to Move"];
-    // "UNLOAD_ONLY (UO)" -> "(UO) Unloading" [label="Already at dst"];
 
     "(UO) Moving" -> "(UO) Moving" [label="Move to dst"];
     "(UO) Moving" -> "(UO) Unloading" [label="Reached Unload dst"];
-    
-    "(UO) Unloading" -> "(UO) Moving" [label="Switch to Move"];
+
+    // "(UO) Unloading" -> "(UO) Moving" [label="Switch to Move"];
+    "(UO) Unloading" -> "(UO) Unloading" [label="Unloading"];
     "(UO) Unloading" -> NORMAL [label="All prio cargo unloaded"];
 }
