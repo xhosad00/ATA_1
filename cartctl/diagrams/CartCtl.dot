@@ -3,22 +3,24 @@ digraph CartCtl {
     rankdir=LR; // TB or LR
     nodesep=1.0; // Horizontal spacing
     ranksep=1.0; // Vertical spacing
-    //states
+    
+    // States
     NORMAL
     UNLOAD_ONLY
     IDLE [shape=doublecircle ]
     
-    //edges
-    IDLE -> NORMAL [label="heartbeat (no prio)"]
-    IDLE -> UNLOAD_ONLY [label="heartbeat (prio)"]
+    // Edges
+    IDLE -> NORMAL [label="Received first request"]
     
-    NORMAL -> UNLOAD_ONLY [label="has prio cargo"]
-    NORMAL -> IDLE [label="nothing to do"]
+    NORMAL -> UNLOAD_ONLY [label="Loaded prio cargo"]
+    NORMAL -> IDLE [label="Nothing to do"]
     NORMAL -> NORMAL [label="Load"]
     NORMAL -> NORMAL [label="Unload"]
     NORMAL -> NORMAL [label="Move"]
     
-    UNLOAD_ONLY -> NORMAL [label="all prio cargo unloaded"]
+    UNLOAD_ONLY -> NORMAL [label="All prio cargo unloaded"]
+    UNLOAD_ONLY -> UNLOAD_ONLY [label="Unload"]
+    UNLOAD_ONLY -> UNLOAD_ONLY [label="Move"]
     
     
 }

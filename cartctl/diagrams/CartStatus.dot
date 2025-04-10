@@ -1,52 +1,50 @@
 digraph CartStatus {
-    
-    rankdir=LR; // TB or LR
-    nodesep=0.5; // Horizontal spacing
-    ranksep=0.5; // Vertical spacing
-    
-    //states
-    IDLE [shape=doublecircle ]
-    NORMAL
-    
-    Moving
-    Unloading
-    Loading
-    
-    "UNLOAD_ONLY (UO)"
-    "(UO) Moving"
-    "(UO) Unloading"
-    
-    //edges
-    IDLE -> NORMAL [label="Recieved first request"]
-    IDLE -> IDLE [label="No requests"]
-    
-    // NORMAL -> "UNLOAD_ONLY (UO)" [label="Has prio cargo request"]
-    NORMAL -> IDLE [label="Nothing to do"]
-    NORMAL -> Moving [label="Switch to Move"]
-    NORMAL -> Loading [label="Can load here"]
-    
-    Moving -> Unloading [label="Reached Unload dst"]
-    Moving -> Moving [label="Move to dst"]
-    Moving -> Loading [label="Reached Load dst"]
-    
-    
-    Loading -> Loading  [label="Loading"]
-    Loading -> Moving  [label="Switch to Move"]
-    Loading -> "UNLOAD_ONLY (UO)"  [label="Loaded priority cargo"]
-    
-    Unloading -> Loading  [label="Can pickup cargo at location"]
-    Unloading -> Moving  [label="Switch to Move"]
-    Unloading -> Unloading  [label="Unloading"]
-    Unloading -> NORMAL  [label="All cargo unloaded" ]
-    
-    // "UNLOAD_ONLY (UO)" -> NORMAL [label="All prio cargo unloaded"]    
-    "UNLOAD_ONLY (UO)" -> "(UO) Moving" [label="Switch to Move"]
-    "UNLOAD_ONLY (UO)" -> "(UO) Unloading" [label="Allready at dst"]
+    rankdir=TB;
+    nodesep=0.3;
+    ranksep=1.0;
 
-    "(UO) Moving" -> "(UO) Moving" [label="Move to dst"]
-    "(UO) Moving" -> "(UO) Unloading" [label="Reached Unload dst"]
+    // States
+    IDLE [shape=doublecircle];
+    NORMAL;
+    Moving;
+    Unloading;
+    Loading;
+
+    subgraph cluster_UO {
+        label="UNLOAD ONLY Mode";
+        style=dashed;
+        "UNLOAD_ONLY (UO)";
+        "(UO) Moving";
+        "(UO) Unloading";
+    }
+
+    // Edges
+    IDLE -> NORMAL [label="Received first request"];
+    IDLE -> IDLE [label="No requests"];
+    NORMAL -> IDLE [label="Nothing to do"];
+    NORMAL -> Moving [label="Switch to Move"];
+    NORMAL -> Loading [label="Can load here"];
+
+    Moving -> Unloading [label="Reached Unload dst"];
+    Moving -> Moving [label="Move to dst"];
+    Moving -> Loading [label="Reached Load dst"];
+
+    Loading -> Loading [label="Loading"];
+    Loading -> Moving [label="Switch to Move"];
+    Loading -> "UNLOAD_ONLY (UO)" [label="Loaded priority cargo"];
+
+    Unloading -> Loading [label="Can pickup cargo at location"];
+    Unloading -> Moving [label="Switch to Move"];
+    Unloading -> Unloading [label="Unloading"];
+    Unloading -> NORMAL [label="All cargo unloaded"];
+
+    // UNLOAD ONLY 
+    "UNLOAD_ONLY (UO)" -> "(UO) Moving" [label="Switch to Move"];
+    // "UNLOAD_ONLY (UO)" -> "(UO) Unloading" [label="Already at dst"];
+
+    "(UO) Moving" -> "(UO) Moving" [label="Move to dst"];
+    "(UO) Moving" -> "(UO) Unloading" [label="Reached Unload dst"];
     
-    // "(UO) Unloading" -> "UNLOAD_ONLY (UO)" [label="Finished Unloading"]
-    "(UO) Unloading" -> "(UO) Moving" [label="Switch to Move"]
-    "(UO) Unloading" -> NORMAL [label="All prio cargo unloaded"]      
+    "(UO) Unloading" -> "(UO) Moving" [label="Switch to Move"];
+    "(UO) Unloading" -> NORMAL [label="All prio cargo unloaded"];
 }
