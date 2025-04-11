@@ -195,10 +195,11 @@ class TestCartRequests(unittest.TestCase):
         # P-01 The system shall process a cargo transfer request within 1 second of its creation
         def req_time_check(cart: Cart, ctl: CartCtl):
             # self.assert
+            print(Jarvis.time())
             self.assertTrue(cart.empty())
             self.assertEqual(len(ctl.requests), 1)
 
-        cart = Cart(4, 150, 2)
+        cart = Cart(4, 150, 0)
         cart.onmove = on_move
         ctl = CartCtl(cart, Jarvis)
 
@@ -230,7 +231,7 @@ class TestCartRequests(unittest.TestCase):
             cargo_req.context = "loaded"
             time = Jarvis.time()
 
-        cart = Cart(4, 150, 1)
+        cart = Cart(4, 150, 0)
         cart.onmove = on_move
         ctl = CartCtl(cart, Jarvis)
         broccoli = createBasicCargo('A', 'B', 20, 'broccoli')
@@ -239,39 +240,50 @@ class TestCartRequests(unittest.TestCase):
         Jarvis.plan(0, add_load, (ctl,broccoli))
         Jarvis.run()
 
-    def test_time_UO_switch(self):
-        """Test if switch tu UNLOAD_ONLY happens instantly after loading prio cargo"""
+    def test_time_Normal_to_UO_switch(self):
+        """Test if switch to UNLOAD_ONLY happens instantly after loading prio cargo"""
         # P-04 Switching the cart to unloading-only mode shall occur immediately after loading priority cargo.
-        time = -1
         def UO_time_check(cart: Cart, ctl: CartCtl):
-            # self.assert
-            print(time, Jarvis.time())
-            print("xxxxxxxxxxxxxxxxxxxxxxxxxxx")
-            self.assertEqual(time, Jarvis.time())
             self.assertEqual(CartCtlStatus.UNLOAD_ONLY, ctl.status)
-        def on_move(cart: Cart):
-            log('%d: Cart is moving %s->%s' % (Jarvis.time(), cart.pos, cart.data))
-            # 
 
         def on_load(cart: Cart, cargo_req: CargoReq):
-            nonlocal time
-            log('%d: Cart atXXXXX %s: loading: %s' % (Jarvis.time(), cart.pos, cargo_req))
+            log('%d: Cart at %s: loading: %s' % (Jarvis.time(), cart.pos, cargo_req))
             log(cart)
-            time = Jarvis.time()
-            print("TIIIIIME", time)
-            # Jarvis.plan(0, UO_time_check, (cart,ctl))
-            # self.assertEqual(CartCtlStatus.UNLOAD_ONLY, ctl.status)
+            Jarvis.SCHED.enter(0, 1, UO_time_check, argument=(cart, ctl), kwargs={}) # Do the UO check as the last event in the same time (event with prio 1)
 
-        cart = Cart(4, 150, 2)
+        cart = Cart(4, 150, 0)
         cart.onmove = on_move
         ctl = CartCtl(cart, Jarvis)
         broccoli = createBasicCargo('A', 'B', 20, 'broccoli')
         broccoli.prio = True # SET BROCOLI TO PRIO CARGO
         broccoli.onload = on_load
         Jarvis.reset_scheduler()
-        Jarvis.plan(0, add_load, (ctl,broccoli))
+        Jarvis.plan(0, add_load, (ctl,broccoli))        
         Jarvis.run()
 
+    def test_time_UO_to_Normal_switch(self):
+        """Test if switch to NORMAL form UO happens within 1s after unloading prio cargo"""
+        # P-05 Switching back to normal mode shall occur within 1 second after unloading the last priority cargo.
+        def NORMAL_time_check(ctl: CartCtl):
+            self.assertEqual(CartCtlStatus.NORMAL, ctl.status)
+
+        def on_unload(cart: Cart, cargo_req: CargoReq):
+            log('%d: Cart at %s: unloading: %s' % (Jarvis.time(), cart.pos, cargo_req))
+            log(cart)
+            Jarvis.plan(1, NORMAL_time_check, (ctl,))
+
+        cart = Cart(4, 150, 0)
+        cart.onmove = on_move
+        ctl = CartCtl(cart, Jarvis)
+        broccoli = createBasicCargo('A', 'B', 20, 'broccoli')
+        carrot = createBasicCargo('B', 'A', 30, 'carrot')   # second item is needed, because otherwise the cart after broccoli unload will switch to IDLE
+        broccoli.onunload = on_unload
+        broccoli.prio = True # SET BROCOLI TO PRIO CARGO
+        broccoli.onload = on_load
+        Jarvis.reset_scheduler()
+        Jarvis.plan(0, add_load, (ctl,broccoli))
+        Jarvis.plan(1, add_load, (ctl,carrot))           
+        Jarvis.run()
 
     def test_cart_props_slots(self):
         """test cart slot restrtictions"""
