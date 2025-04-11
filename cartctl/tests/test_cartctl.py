@@ -14,7 +14,7 @@ from cartctl.jarvisenv import Jarvis
 
 def log(msg):
     "simple logging"
-    print('  %s' % msg)
+    # print('  %s' % msg) # MUTED LOGGING
 
 # Basic functions with no asserts
 def add_load(ctl: CartCtl, cargo_req: CargoReq):
@@ -45,8 +45,6 @@ class TestCartRequests(unittest.TestCase):
 
     def test_happy_no_prio(self):
         "Happy-path with no priority cargo"
-        print("")
-
         
         def on_move(cart: Cart):
             log('%d: Cart is moving %s->%s' % (Jarvis.time(), cart.pos, cart.data))
@@ -115,7 +113,6 @@ class TestCartRequests(unittest.TestCase):
 
     def test_happy_prio(self):
         "Happy-path with priority cargo"
-        print("\n")
 
         def on_move(cart: Cart):
             log('%d: Cart is moving %s->%s' % (Jarvis.time(), cart.pos, cart.data))
@@ -194,8 +191,6 @@ class TestCartRequests(unittest.TestCase):
         """Test if req is processed under 1s"""
         # P-01 The system shall process a cargo transfer request within 1 second of its creation
         def req_time_check(cart: Cart, ctl: CartCtl):
-            # self.assert
-            print(Jarvis.time())
             self.assertTrue(cart.empty())
             self.assertEqual(len(ctl.requests), 1)
 
@@ -221,7 +216,6 @@ class TestCartRequests(unittest.TestCase):
             log('%d: Cart is moving %s->%s' % (Jarvis.time(), cart.pos, cart.data))
             self.assertEqual(CartStatus.MOVING, cart.status)
             self.assertFalse(cart.empty())
-            print (Jarvis.time(), time)
             self.assertTrue(Jarvis.time() - time < 1) # check that
 
         def on_load(cart: Cart, cargo_req: CargoReq):
