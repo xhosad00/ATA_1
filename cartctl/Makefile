@@ -27,3 +27,11 @@ allDiagrams:
 
 cartctl/jarvis.dot: cartctl/jarvisenv.py
 	python -c 'from cartctl import jarvisenv; jarvisenv.Jarvis.TRACKS.export("cartctl/jarvis.dot")'
+
+# need to create tmp folder due to folder naming (cartclt/cartctl..)
+zip:
+	mkdir -p cartctl_tmp/cartctl
+	cp -r Makefile README.md diagrams tests cartctl_tmp/cartctl/
+	cp -r cartctl cartctl_tmp/cartctl/cartctl_src
+	cd cartctl_tmp && zip -r ../xhosad00.zip cartctl
+	rm -rf cartctl_tmp
