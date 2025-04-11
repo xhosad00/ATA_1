@@ -20,6 +20,12 @@ Není definováno jak se má chovat. V implementaci jsou požadavky přes 120s z
 
 ------
 
+>C-06 The system shall communicate correctly with the factory’s external systems and respond to their requests.
+
+SUT není takový externí systém a "factory" není SUT, tudíž tento požadavek není testován.
+
+------
+
 #### Nejasnosti:
 >F-10 The cart shall reject the cargo if all cart slots are occupied
 or loading exceeds the maximum capacity
@@ -36,7 +42,7 @@ Jednotlivé stavové diagramy
 >
 > Diagram popisuje stavy meteriálu od prvotní žádosti až po vyložení nebo zahození požadavku. Požadavku je nastavena priorita po šedesáti sekundách. 
 > 
-> Problémový je ale případ, kdy přetrvá od nastavení dalších 60s. Ze specifikace chování: "Pokud takový materiál (prioritní) stále není naložen do další 1 minuty a vozík má volnou kapacitu, materiál se okamžitě naloží a vozík přepne do režimu pouze-vykládka."Pomiňuje ale fakt, že pokud vozík není v danné stanici, materiál se nemůže naložit
+> Problémový je ale případ, kdy přetrvá od nastavení dalších 60s. Ze specifikace chování: "Pokud takový materiál (prioritní) stále není naložen do další 1 minuty a vozík má volnou kapacitu, materiál se okamžitě naloží a vozík přepne do režimu pouze-vykládka." Pomiňuje ale fakt, že pokud vozík není v danné stanici, materiál se nemůže naložit.
 
 > ### Stavový diagram CartCtl
 > 
@@ -47,9 +53,9 @@ Jednotlivé stavové diagramy
 > ### Stavový diagram Vozíku
 >
 > Seskupuje dohromady Cart a CartCtl. Figuruje jako hlavní stavový diagraf pro tvoření testů.
-> Jako počáteční stav má IDLE, ve kterém je pokud nemá žádný aktivní požadavek nebo nevyložený náklad. Přechod do NORMAL proběhne když je registrován požadavek. Zbytek grafu slouží pro plnění požadavků.
-> * Loading - při provedení hrany `Loading` se naloží jeden materiál z aktuální stanice. Pokud je matirál prioritní, přepíná se do UNLOAD_ONLY režimu
-> * Moving - První přesun do Moving sám o sobě nedělá přesun vozíku. Figuruje tedy taky jako spoj mezi stavy Loading a Unloading, i když se vozík nepřesune do jiné stanice. Až provedením hrany `Move to dst` se přesune do další dosažitelné stanice, která byla zvolena plánovacím algoritmem.
+> Jako počáteční stav má IDLE, ve kterém je, pokud nemá žádný aktivní požadavek nebo nevyložený náklad. Přechod do NORMAL proběhne, když je registrován požadavek. Zbytek grafu slouží pro plnění požadavků.
+> * Loading - při provedení hrany `Loading` se naloží jeden materiál z aktuální stanice. Pokud je matirál prioritní, přepíná se do UNLOAD_ONLY režimu.
+> * Moving - První přesun do Moving sám o sobě nedělá přesun vozíku. Stav tedy také figuruje jako spoj mezi stavy Loading a Unloading, i když se vozík nepřesune do jiné stanice. Až provedením hrany `Move to dst` se přesune do další dosažitelné stanice, která byla zvolena plánovacím algoritmem.
 > * Unloading - při provedení hrany `Unloading` se vyloží jeden materiál z aktuální stanice.
 > 
 > Stavy Moving a Unloading v podgrafu UNLOAD ONLY Mode figurují stejně jako v normálním provozu, až na to, že při vyložení prioritního materiálu se hranou `All prio cargo unloaded` přesune do stavu NORMAL.
@@ -85,6 +91,8 @@ Požadavky 20-23 slouží pro splnění kritéria **Edge Coverage**
 Je několik požadavků, které v cestách nejsou zahrnuty z následujících důvodů:
 * F-01 - Neexistuje žádný modul, který by automaticky generoval nové požadavky
 * F-08 - Diagram nezahrnuje jednotlivé stanice a požadavky. Cesta splňující/vyvracující tuto vlastnost by byla nejasná.
+* P-02 - [Rozporu ve Specifikace chování](#rozporu-ve-specifikace-chovani)
+* C-01 až C-04 - Jsou testovány bez zpouštění simulace
 
 
 ## Vstupní parametry testů
