@@ -7,8 +7,6 @@ import sched
 import collections
 from . import cart
 
-from cartctl.cart import CartError
-
 class Status(enum.Enum):
     "Controller status"
     NORMAL = 0      # normal behaviour
@@ -126,9 +124,8 @@ class CartCtl:
         "update prio of each of the requests if it waits too long"
         curr_time = self.time()
         for cargo_req in self.requests:
-            if curr_time - cargo_req.born >= 60 and  (not cargo_req.prio):
+            if curr_time - cargo_req.born >= 60:
                 cargo_req.set_priority()
-                print( "%d:Setting prio: %s" % (curr_time, cargo_req.content))
         self.sort_requests()
 
     def find_prio_request(self):
@@ -157,10 +154,8 @@ class CartCtl:
 
         if self.cart.any_prio_cargo():
             self.status = Status.UNLOAD_ONLY
-            print("SETTING UNLOAD-----------")
         else:
             self.status = Status.NORMAL
-            print("SETTING NORMAL-----------")
 
         slot = self.try_unload_here_single()
         if slot != -1:
