@@ -115,11 +115,13 @@ Je několik požadavků, které v cestách nejsou zahrnuty z následujících d�
 |3|150 |4 |[('A','B',20,'broccoli'), ('B','A',30,'carrot'), ('B','D',40,'daikon')]| [1, 2, 3] |Testuje zda je cesta skutečně optimální (na lehkém příkladu)|8| test_optimize_total_path|
 |4|150|4|[('B', 'C', 20, 'broccoli')]|[0]|Ověřuje, že kontroler zaregistruje požadavek do jedné sekundy|P-01|test_time_req_1s|
 |5|150|4|[('A', 'B', 20, 'broccoli')]|[0]|Ověřuje, že plánování cesty netrvá dále než jednu sekundu simulačního času|P-03|test_time_pathing_1s|
-|6|150|4|[('A', 'B', 20, 'broccoli')]|[0]|Ověřuje, že při naložení prioritního materiálu se v tentýž čas vozík přepne do režimu UNLOAD_ONLY|P-04|test_time_Normal_to_UO_switch|
-|7|150|4|[('A', 'B', 20, 'broccoli')]|[0]|Ověřuje, že při vyložení prioritního materiálu se do sekundy přepne do rrežimu NORMAL.|P-05|test_time_Normal_to_UO_switch|
+|6|150|4|[('A', 'B', 20, 'broccoli')]|[0]|Ověřuje, že při naložení prioritního materiálu se v tentýž čas vozík přepne do režimu UNLOAD_ONLY|P-04|test_time_Normal_\ to_UO_switch|
+|7|150|4|[('A', 'B', 20, 'broccoli')]|[0]|Ověřuje, že při vyložení prioritního materiálu se do sekundy přepne do rrežimu NORMAL.|P-05|test_time_Normal_\ to_UO_switch|
 |8|[50, 150, 500]|[0, 1, 2, 3, 4, 5]|-|-|Postupně zkouší kombinace vozíku. Když je zvolená špatná kombinace, očekává CartError|C-01 C-03 C-04|test_cart_props_slots|
 |9|2|[0, 1, 50, 99.9, 150, 200, 500, 501]|-|-|Postupně zkouší kombinace vozíku. Když je zvolená špatná kombinace, očekává CartError|C-02|test_cart_props_weight|
 |10|500|2|[('A','D',50,'broccoli'), ('A','D',1000,'bigBroccoli'), ('A','D',-1,'bigBroccoli')]|[0]|Vytvoří několik požadavků. U přidávání několika nevalidních požadavků očekává CartError|12|test_cart_props_bad_req|
+
+Názvy testů `test_time_Normal_to_UO_switch` a `test_time_Normal_to_UO_switch` jsou zalomeny kvůli šířce sloupce
 
 Tastovací cesty jsou vždy přiřazeny alespoň k jednomu konkrétnímu testu. (Jednoduchá a časté cesty jsou pravděpodobně více testy, jen nejsou vypsané v tabulce)
 
