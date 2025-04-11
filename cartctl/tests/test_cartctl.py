@@ -206,7 +206,7 @@ class TestCartRequests(unittest.TestCase):
         broccoli = createBasicCargo('B', 'C', 20, 'broccoli')
         Jarvis.reset_scheduler()
         Jarvis.plan(0, add_load, (ctl,broccoli))
-        Jarvis.plan(0.999, req_time_check, (cart, ctl)) #TODO add time to test?
+        Jarvis.plan(0.999, req_time_check, (cart, ctl))
         Jarvis.run()
 
         cart = Cart(4, 150, 0)
@@ -357,10 +357,6 @@ class TestCartRequests(unittest.TestCase):
         Jarvis.plan(2, add_load_err, (ctl,broccoli3))
         Jarvis.run()
         
-
-        # C-06 The system shall communicate correctly with the factory’s external systems and respond to their requests.
-        #TODO
-        return
     
 
 if __name__ == "__main__":
