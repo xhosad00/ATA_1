@@ -170,7 +170,7 @@ class TestCartRequests(unittest.TestCase):
 
     def test_optimize_total_path(self):
         """Require good path optimization"""
-        # optimezed path:           A->B->C->D->A 70
+        # optimezed path:           A->B->C->D->A  total path length=70
         # worse path (due to UCS):  A->B->A->B->C->D
 
         cart = Cart(4, 150, 0)
@@ -297,6 +297,7 @@ class TestCartRequests(unittest.TestCase):
         Cart(2, 50, 0)
         Cart(2, 150, 0)
         Cart(2, 500, 0)
+        # bad cart configs
         self.assertRaises(CartError, Cart, 2, 0, 0)
         self.assertRaises(CartError, Cart, 2, 1, 0)
         self.assertRaises(CartError, Cart, 2, 200, 0)
@@ -306,38 +307,33 @@ class TestCartRequests(unittest.TestCase):
     def test_cart_props_bad_req(self):
         """test cart bad requests restrtictions"""
         # C-05 The control system shall not submit invalid requests (e.g.,cargo transfer exceeding the cart’s capacity).
-        def add_load(c: CartCtl, cargo_req: CargoReq):
-            c.request(cargo_req)
+        def add_load(ctl: CartCtl, cargo_req: CargoReq):
+            ctl.request(cargo_req)
 
-        def add_load_err(c: CartCtl, cargo_req: CargoReq):
-            self.assertRaises(CartError, c.request, cargo_req)
+        def add_load_err(ctl: CartCtl, cargo_req: CargoReq):
+            self.assertRaises(CartError, ctl.request, cargo_req)
 
         cart = Cart(2, 500, 0)
         ctl = CartCtl(cart, Jarvis)
 
-        
+        #ok
         broccoli = CargoReq('A', 'D', 50, 'broccoli')
         Jarvis.reset_scheduler()
         Jarvis.plan(0, add_load, (ctl,broccoli))
         Jarvis.run()
         
-        # Ok
+        self.assertRaises(AssertionError, CargoReq, 'A', 'D', -1, 'bigBroccoli') #Should throw CartError
+        
+        # Should throw errors
+        # F-10 is badly worded, needs clarification (if error is thrown in cartctl.request)
         cart = Cart(2, 500, 0)
         ctl = CartCtl(cart, Jarvis)        
         bigBroccoli = CargoReq('A', 'D', 1000, 'bigBroccoli')
         Jarvis.reset_scheduler()
         Jarvis.plan(0, add_load_err, (ctl,bigBroccoli))
-        Jarvis.run()
-        
-        # Should throw errors
-        cart = Cart(2, 500, 0)
-        ctl = CartCtl(cart, Jarvis)        
-        negativeBroccoli = CargoReq('A', 'D', -1, 'bigBroccoli')
-        Jarvis.reset_scheduler()
-        Jarvis.plan(0, add_load_err, (ctl,negativeBroccoli))
-        Jarvis.run()
+        Jarvis.run()        
 
-        # F-10 is badly worded, needs clarification
+        # F-10 is badly worded, needs clarification (if error is thrown in cartctl.request or on loading)
         cart = Cart(2, 500, 1)
         cart.onmove = on_move
         broccoli1 = createBasicCargo('B', 'D', 50, 'broccoli1')
@@ -347,18 +343,6 @@ class TestCartRequests(unittest.TestCase):
         Jarvis.plan(0, add_load, (ctl,broccoli1))
         Jarvis.plan(1, add_load, (ctl,broccoli2))
         Jarvis.plan(2, add_load_err, (ctl,broccoli3))
-        Jarvis.run()
-
-        # F-10 is badly worded, needs clarification
-        cart = Cart(2, 500, 1)
-        cart.onmove = on_move
-        broccoli1 = createBasicCargo('B', 'D', 50, 'broccoli1')
-        broccoli2 = createBasicCargo('B', 'D', 50, 'broccoli2')
-        broccoli3 = createBasicCargo('B', 'D', 50, 'broccoli3')
-        Jarvis.reset_scheduler()
-        Jarvis.plan(0, add_load, (ctl,broccoli1))
-        Jarvis.plan(1, add_load, (ctl,broccoli2))
-        Jarvis.plan(35, add_load_err, (ctl,broccoli3))
         Jarvis.run()
         
 
