@@ -157,8 +157,10 @@ class CartCtl:
 
         if self.cart.any_prio_cargo():
             self.status = Status.UNLOAD_ONLY
+            print("SETTING UNLOAD-----------")
         else:
             self.status = Status.NORMAL
+            print("SETTING NORMAL-----------")
 
         slot = self.try_unload_here_single()
         if slot != -1:

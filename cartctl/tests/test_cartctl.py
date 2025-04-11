@@ -17,22 +17,22 @@ def log(msg):
     print('  %s' % msg)
 
 # Basic functions with no asserts
-def add_load(c: CartCtl, cargo_req: CargoReq):
+def add_load(ctl: CartCtl, cargo_req: CargoReq):
     log('%d: Requesting %s at %s' % \
         (Jarvis.time(), cargo_req, cargo_req.src))
-    c.request(cargo_req)
+    ctl.request(cargo_req)
 
-def on_move(c: Cart):
-    log('%d: Cart is moving %s->%s' % (Jarvis.time(), c.pos, c.data))
+def on_move(cart: Cart):
+    log('%d: Cart is moving %s->%s' % (Jarvis.time(), cart.pos, cart.data))
 
-def on_load(c: Cart, cargo_req: CargoReq):
-    log('%d: Cart at %s: loading: %s' % (Jarvis.time(), c.pos, cargo_req))
-    log(c)
+def on_load(cart: Cart, cargo_req: CargoReq):
+    log('%d: Cart at %s: loading: %s' % (Jarvis.time(), cart.pos, cargo_req))
+    log(cart)
     cargo_req.context = "loaded"
 
-def on_unload(c: Cart, cargo_req: CargoReq):
-    log('%d: Cart at %s: unloading: %s' % (Jarvis.time(), c.pos, cargo_req))
-    log(c)
+def on_unload(cart: Cart, cargo_req: CargoReq):
+    log('%d: Cart at %s: unloading: %s' % (Jarvis.time(), cart.pos, cargo_req))
+    log(cart)
     cargo_req.context = "unloaded"
 
 def createBasicCargo(src, dst, weight, name):
@@ -48,40 +48,40 @@ class TestCartRequests(unittest.TestCase):
         print("")
 
         
-        def on_move(c: Cart):
-            log('%d: Cart is moving %s->%s' % (Jarvis.time(), c.pos, c.data))
+        def on_move(cart: Cart):
+            log('%d: Cart is moving %s->%s' % (Jarvis.time(), cart.pos, cart.data))
             self.assertEqual(CartStatus.MOVING, cart.status)
             self.assertFalse(cart.empty())  #during entire run, the cart should have some cargo
 
-        def on_load(c: Cart, cargo_req: CargoReq):
-            log('%d: Cart at %s: loading: %s' % (Jarvis.time(), c.pos, cargo_req))
-            log(c)
+        def on_load(cart: Cart, cargo_req: CargoReq):
+            log('%d: Cart at %s: loading: %s' % (Jarvis.time(), cart.pos, cargo_req))
+            log(cart)
             self.assertFalse(cart.empty())
             self.assertEqual(None, cargo_req.context)
             cargo_req.context = "loaded"
             if cargo_req.content == 'broccoli':
-                self.assertEqual('A', c.pos)
-                self.assertEqual(cargo_req.weight, c.load_sum())
+                self.assertEqual('A', cart.pos)
+                self.assertEqual(cargo_req.weight, cart.load_sum())
             if cargo_req.content == 'carrot':
-                self.assertEqual('B', c.pos)
+                self.assertEqual('B', cart.pos)
             if cargo_req.content == 'daikon':
-                self.assertEqual('C', c.pos)
+                self.assertEqual('C', cart.pos)
             if cargo_req.content == 'onion':
-                self.assertEqual('C', c.pos)
+                self.assertEqual('C', cart.pos)
 
-        def on_unload(c: Cart, cargo_req: CargoReq):
-            log('%d: Cart at %s: unloading: %s' % (Jarvis.time(), c.pos, cargo_req))
-            log(c)
+        def on_unload(cart: Cart, cargo_req: CargoReq):
+            log('%d: Cart at %s: unloading: %s' % (Jarvis.time(), cart.pos, cargo_req))
+            log(cart)
             self.assertEqual("loaded", cargo_req.context)
             cargo_req.context = "unloaded"
             if cargo_req.content == 'broccoli':
-                self.assertEqual('B', c.pos)
+                self.assertEqual('B', cart.pos)
             if cargo_req.content == 'carrot':
-                self.assertEqual('C', c.pos)
+                self.assertEqual('C', cart.pos)
             if cargo_req.content == 'daikon':
-                self.assertEqual('A', c.pos)
+                self.assertEqual('A', cart.pos)
             if cargo_req.content == 'onion':
-                self.assertEqual('D', c.pos)
+                self.assertEqual('D', cart.pos)
 
         def createBasicCargo(src, dst, weight, name):
             req = CargoReq(src, dst, weight, name)
@@ -117,24 +117,24 @@ class TestCartRequests(unittest.TestCase):
         "Happy-path with priority cargo"
         print("\n")
 
-        def on_move(c: Cart):
-            log('%d: Cart is moving %s->%s' % (Jarvis.time(), c.pos, c.data))
+        def on_move(cart: Cart):
+            log('%d: Cart is moving %s->%s' % (Jarvis.time(), cart.pos, cart.data))
             self.assertEqual(CartStatus.MOVING, cart.status)
 
-        def on_load(c: Cart, cargo_req: CargoReq):
-            log('%d: Cart at %s: loading: %s' % (Jarvis.time(), c.pos, cargo_req))
-            log(c)
+        def on_load(cart: Cart, cargo_req: CargoReq):
+            log('%d: Cart at %s: loading: %s' % (Jarvis.time(), cart.pos, cargo_req))
+            log(cart)
             self.assertFalse(cart.empty())
             self.assertEqual(None, cargo_req.context)
             cargo_req.context = "loaded"
 
-        def on_unload(c: Cart, cargo_req: CargoReq):
-            log('%d: Cart at %s: unloading: %s' % (Jarvis.time(), c.pos, cargo_req))
-            log(c)
+        def on_unload(cart: Cart, cargo_req: CargoReq):
+            log('%d: Cart at %s: unloading: %s' % (Jarvis.time(), cart.pos, cargo_req))
+            log(cart)
             cargo_req.context = "unloaded"
             if cargo_req.content == 'carrot':
-                self.assertEqual('B', c.pos)
-                self.assertEqual(0, c.load_sum()) # check that daikon wasnt loaded (Unload_Only)
+                self.assertEqual('B', cart.pos)
+                self.assertEqual(0, cart.load_sum()) # check that daikon wasnt loaded (Unload_Only)
 
         def createBasicCargo(src, dst, weight, name):
             req = CargoReq(src, dst, weight, name)
@@ -142,7 +142,7 @@ class TestCartRequests(unittest.TestCase):
             req.onunload = on_unload
             return req
         
-        def checkUNLOAD_ONLY(ctl):
+        def checkUNLOAD_ONLY(ctl :CartCtl):
             self.assertEqual(CartCtlStatus.UNLOAD_ONLY, ctl.status)
 
         cart = Cart(4, 150, 0)
@@ -189,6 +189,89 @@ class TestCartRequests(unittest.TestCase):
 
         cart = Cart(4, 150, 0)
         ctl = CartCtl(cart, Jarvis)
+
+    def test_time_req_1s(self):
+        """Test if req is processed under 1s"""
+        # P-01 The system shall process a cargo transfer request within 1 second of its creation
+        def req_time_check(cart: Cart, ctl: CartCtl):
+            # self.assert
+            self.assertTrue(cart.empty())
+            self.assertEqual(len(ctl.requests), 1)
+
+        cart = Cart(4, 150, 2)
+        cart.onmove = on_move
+        ctl = CartCtl(cart, Jarvis)
+
+        broccoli = createBasicCargo('B', 'C', 20, 'broccoli')
+        Jarvis.reset_scheduler()
+        Jarvis.plan(0, add_load, (ctl,broccoli))
+        Jarvis.plan(0.999, req_time_check, (cart, ctl)) #TODO add time to test?
+        Jarvis.run()
+
+        cart = Cart(4, 150, 0)
+        ctl = CartCtl(cart, Jarvis)
+
+    def test_time_pathing_1s(self):
+        """Test if optimisation algorithm shall run within a time less than 1 second"""
+        # P-03 The route optimisation algorithm shall run within a time less than 1 second.
+        # check that te delay after load to Move is < 1s (planning under 1s)            
+        time = -1
+        def on_move(cart: Cart):
+            log('%d: Cart is moving %s->%s' % (Jarvis.time(), cart.pos, cart.data))
+            self.assertEqual(CartStatus.MOVING, cart.status)
+            self.assertFalse(cart.empty())
+            print (Jarvis.time(), time)
+            self.assertTrue(Jarvis.time() - time < 1) # check that
+
+        def on_load(cart: Cart, cargo_req: CargoReq):
+            nonlocal time
+            log('%d: Cart at %s: loading: %s' % (Jarvis.time(), cart.pos, cargo_req))
+            log(cart)
+            cargo_req.context = "loaded"
+            time = Jarvis.time()
+
+        cart = Cart(4, 150, 1)
+        cart.onmove = on_move
+        ctl = CartCtl(cart, Jarvis)
+        broccoli = createBasicCargo('A', 'B', 20, 'broccoli')
+        broccoli.onload = on_load
+        Jarvis.reset_scheduler()
+        Jarvis.plan(0, add_load, (ctl,broccoli))
+        Jarvis.run()
+
+    def test_time_UO_switch(self):
+        """Test if switch tu UNLOAD_ONLY happens instantly after loading prio cargo"""
+        # P-04 Switching the cart to unloading-only mode shall occur immediately after loading priority cargo.
+        time = -1
+        def UO_time_check(cart: Cart, ctl: CartCtl):
+            # self.assert
+            print(time, Jarvis.time())
+            print("xxxxxxxxxxxxxxxxxxxxxxxxxxx")
+            self.assertEqual(time, Jarvis.time())
+            self.assertEqual(CartCtlStatus.UNLOAD_ONLY, ctl.status)
+        def on_move(cart: Cart):
+            log('%d: Cart is moving %s->%s' % (Jarvis.time(), cart.pos, cart.data))
+            # 
+
+        def on_load(cart: Cart, cargo_req: CargoReq):
+            nonlocal time
+            log('%d: Cart atXXXXX %s: loading: %s' % (Jarvis.time(), cart.pos, cargo_req))
+            log(cart)
+            time = Jarvis.time()
+            print("TIIIIIME", time)
+            # Jarvis.plan(0, UO_time_check, (cart,ctl))
+            # self.assertEqual(CartCtlStatus.UNLOAD_ONLY, ctl.status)
+
+        cart = Cart(4, 150, 2)
+        cart.onmove = on_move
+        ctl = CartCtl(cart, Jarvis)
+        broccoli = createBasicCargo('A', 'B', 20, 'broccoli')
+        broccoli.prio = True # SET BROCOLI TO PRIO CARGO
+        broccoli.onload = on_load
+        Jarvis.reset_scheduler()
+        Jarvis.plan(0, add_load, (ctl,broccoli))
+        Jarvis.run()
+
 
     def test_cart_props_slots(self):
         """test cart slot restrtictions"""

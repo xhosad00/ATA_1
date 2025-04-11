@@ -4,14 +4,23 @@
 
 ## Nejasnosti/chyby ve specifikaci
 
-Rozporu ve Specifikace chování:
+#### Rozporu ve Specifikace chování:
 
 > Požadavek "F-06 In unloading-only mode, the cart shall not perform any other loading or unloading except for priority cargo." Je v rozporu s "V tomto režimu (prioritní) vozík ignoruje jiné požadavky na převoz a zamíří přímo k cílové zastávce prioritního materiálu"
 
 Dále je požadována jako korektní varinata chování, že vozík v režimu UNLOAD_ONLY bude skutečně poze vykládat a jiný prioritní materiál nenaloží (tak jak je to v aktuální implementaci).
 Pokud by byla tato doměnka špatná, tak by vzrostla sekce UNLOAD_ONLY Mode o nakládání prioritního materiálu a vykládání více než jednoho materiálu.
 
-Nejasnosti:
+------
+
+> "P-02 The cart shall respond to a priority request within 1 minute of its setting" je v rozporu s "F-10 The cart shall reject the cargo if all cart slots are occupied
+or loading exceeds the maximum capacity." respektive případem, kdy materiál existuje přes 120s a vozík není na jeho stanici.
+
+Není definováno jak se má chovat. V implementaci jsou požadavky přes 120s zahazovány. Aktuálně algoritmus neprioritizuje stanice kde je prioritní materiál. Požadavek P-02 NEMŮŽE být garantován.
+
+------
+
+#### Nejasnosti:
 >F-10 The cart shall reject the cargo if all cart slots are occupied
 or loading exceeds the maximum capacity
 
