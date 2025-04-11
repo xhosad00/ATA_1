@@ -1,4 +1,5 @@
 # 1. projektu ATA LS 2024/25 - Dokumentace testů
+<!-- Tabulky nejsou formátované (korektní odskákání mezerami), protože kvůli dlouhým textům se stávají extrémně nepřehledné -->
 
 ### Autor: Bc. Adam Hos \<xhosad00>
 
@@ -52,6 +53,7 @@ Jednotlivé stavové diagramy
 
 > ### Stavový diagram Vozíku
 >
+> ![alt text](./diagrams/CartStatus.png "CartStatus")
 > Seskupuje dohromady Cart a CartCtl. Figuruje jako hlavní graf pro tvoření testů.
 > Jako počáteční stav má IDLE, ve kterém je, pokud nemá žádný aktivní požadavek nebo nevyložený náklad. Přechod do NORMAL proběhne, když je registrován požadavek. Zbytek grafu slouží pro plnění požadavků.
 > * Loading - při provedení hrany `Loading` se naloží jeden materiál z aktuální stanice. Pokud je matirál prioritní, přepíná se do UNLOAD_ONLY režimu.
@@ -59,7 +61,6 @@ Jednotlivé stavové diagramy
 > * Unloading - při provedení hrany `Unloading` se vyloží jeden materiál z aktuální stanice.
 > 
 > Stavy Moving a Unloading v podgrafu UNLOAD ONLY Mode figurují stejně jako v normálním provozu, až na to, že při vyložení prioritního materiálu se hranou `All prio cargo unloaded` přesune do stavu NORMAL.
-> ![alt text](./diagrams/CartStatus.png "CartStatus")
 
 
 ## Testovací cesty
@@ -107,11 +108,11 @@ Je několik požadavků, které v cestách nejsou zahrnuty z následujících d�
 ## Tabulka testů
 
 
-| Id |cartWeight|slots|cargoReq|reqTime| očekávaný výsledek | pokryté test. cesty / požadavky |  název testovací metody |
+| Id |cartWeight|slots|cargoReq|reqTime| očekávaný výsledek (průběh daného testu) | pokryté test. cesty / požadavky |  testovací metoda |
 | :--- | :------ | :------- | :---- |:---- |:---- |:---- |:---- |
 |1|150 |4 |[('A','B',30,'broccoli'), ('B','C',100,'carrot'), ('C','A',10,'daikon'), ('C','D',20,'onion')]| [1, 2, 70, 90] | Kontrolér příjmá požadavky v daných časech, postupně je úspěšně plní (nakládá a vykládá ve správných stanicích) a žádný materiál se nestane prioritním |1 8 9 13 20 21| test_happy_no_prio|
-|2|150 |4 |[('B','D',150,'broccoli'), ('D','B',30,'carrot'), ('A','B', 40,'daikon')]| [1, 2, 70] |Kontrolér příjmá požadavky v daných časech, postupně je úspěšně plní. Materiál `carrot` se stane prioritní. Po cestě na stanici vykládání `carrot` se nenaloží `daikon` kvůli UNLOAD_ONLY, i když má vozík volný slot a kapacitu a `daikon` je na cestě |1 2 3 5 6 7 8 13 20 22 23| test_happy_prio|
-|3|150 |4 |[('A','B',20,'broccoli'), ('B','A',30,'carrot'), ('B','D', 40,'daikon')]| [1, 2, 3] |Testuje zda je cesta skutečně optimální (na lehkém příkladu)|8| test_optimize_total_path|
+|2|150 |4 |[('B','D',150,'broccoli'), ('D','B',30,'carrot'), ('A','B',40,'daikon')]| [1, 2, 70] |Kontrolér příjmá požadavky v daných časech, postupně je úspěšně plní. Materiál `carrot` se stane prioritní. Po cestě na stanici vykládání `carrot` se nenaloží `daikon` kvůli UNLOAD_ONLY, i když má vozík volný slot a kapacitu a `daikon` je na cestě |1 2 3 5 6 7 8 13 20 22 23| test_happy_prio|
+|3|150 |4 |[('A','B',20,'broccoli'), ('B','A',30,'carrot'), ('B','D',40,'daikon')]| [1, 2, 3] |Testuje zda je cesta skutečně optimální (na lehkém příkladu)|8| test_optimize_total_path|
 |4|150|4|[('B', 'C', 20, 'broccoli')]|[0]|Ověřuje, že kontroler zaregistruje požadavek do jedné sekundy|P-01|test_time_req_1s|
 |5|150|4|[('A', 'B', 20, 'broccoli')]|[0]|Ověřuje, že plánování cesty netrvá dále než jednu sekundu simulačního času|P-03|test_time_pathing_1s|
 |6|150|4|[('A', 'B', 20, 'broccoli')]|[0]|Ověřuje, že při naložení prioritního materiálu se v tentýž čas vozík přepne do režimu UNLOAD_ONLY|P-04|test_time_Normal_to_UO_switch|
