@@ -5,7 +5,6 @@ Example of usage/test of Cart controller implementation.
 
 import sys
 import unittest
-# from cartctl.cartctl.cartctl import CartCtl
 from cartctl.cartctl import CartCtl
 from cartctl.cartctl import Status as CartCtlStatus
 from cartctl.cart import Cart, CargoReq, CartError
