@@ -29,13 +29,13 @@ SUT není takový externí systém a "factory" není SUT, tudíž tento požadav
 
 #### Nejasnosti:
 >F-10 The cart shall reject the cargo if all cart slots are occupied
-or loading exceeds the maximum capacity
+or loading exceeds the maximum capacity.
 
-Není jasné, jestli se požadavek vztahuje na požadavek už při jeho vytvoření, nebo až při nakládání 
+Není jasné, jestli se požadavek vztahuje na požadavek už při jeho vytvoření, nebo až při nakládání .
 
 ## Diagramy
 
-Jednotlivé stavové diagramy
+Jednotlivé stavové diagramy:
 
 > ### Stavový diagram nákladu
 > 
@@ -65,7 +65,7 @@ Jednotlivé stavové diagramy
 
 ## Testovací cesty
 Zvolené pokrytí: **Edge Coverage**
-Cesta vždy patří k danému diagramu (specifikováno na začátku cesty)
+Cesta vždy patří k danému diagramu (specifikováno na začátku cesty).
 
 | Id | cesta/uzly   | pokryté požadavky |
 | :------------------ | :----------- | :---------------- |
@@ -87,13 +87,13 @@ Cesta vždy patří k danému diagramu (specifikováno na začátku cesty)
 |22|CartStatus: NORMAL->Moving->Moving->Loading|-|
 |23|CartStatus: Loading->UNLOAD_ONLY (UO)->(UO) Moving->(UO) Moving->(UO) Unloading->(UO) Unloading->NORMAL|-|
 
-Požadavky 20-23 slouží pro splnění kritéria **Edge Coverage**
+Požadavky 20-23 slouží pro splnění kritéria **Edge Coverage**.
 
 Je několik požadavků, které v cestách nejsou zahrnuty z následujících důvodů:
-* F-01 - Neexistuje žádný modul, který by automaticky generoval nové požadavky
+* F-01 - Neexistuje žádný modul, který by automaticky generoval nové požadavky.
 * F-08 - Diagram nezahrnuje jednotlivé stanice a požadavky. Cesta splňující/vyvracující tuto vlastnost by byla nejasná.
-* P-02 - [Rozporu ve Specifikace chování](#rozporu-ve-specifikace-chovani)
-* C-01 až C-04 - Jsou testovány bez zpouštění simulace
+* P-02 - [Rozporu ve Specifikace chování](#rozporu-ve-specifikace-chovani).
+* C-01 až C-04 - Jsou testovány bez zpouštění simulace.
 
 
 ## Vstupní parametry testů
@@ -110,16 +110,16 @@ Je několik požadavků, které v cestách nejsou zahrnuty z následujících d�
 
 | Id |cartWeight|slots|cargoReq|reqTime| očekávaný výsledek (průběh daného testu) | pokryté test. cesty / požadavky |  testovací metoda |
 | :--- | :------ | :------- | :---- |:---- |:---- |:---- |:---- |
-|1|150 |4 |[('A','B',30,'broccoli'), ('B','C',100,'carrot'), ('C','A',10,'daikon'), ('C','D',20,'onion')]| [1, 2, 70, 90] | Kontrolér příjmá požadavky v daných časech, postupně je úspěšně plní (nakládá a vykládá ve správných stanicích) a žádný materiál se nestane prioritním |1 8 9 13 20 21| test_happy_no_prio|
-|2|150 |4 |[('B','D',150,'broccoli'), ('D','B',30,'carrot'), ('A','B',40,'daikon')]| [1, 2, 70] |Kontrolér příjmá požadavky v daných časech, postupně je úspěšně plní. Materiál `carrot` se stane prioritní. Po cestě na stanici vykládání `carrot` se nenaloží `daikon` kvůli UNLOAD_ONLY, i když má vozík volný slot a kapacitu a `daikon` je na cestě |1 2 3 5 6 7 8 13 20 22 23| test_happy_prio|
-|3|150 |4 |[('A','B',20,'broccoli'), ('B','A',30,'carrot'), ('B','D',40,'daikon')]| [1, 2, 3] |Testuje zda je cesta skutečně optimální (na lehkém příkladu)|8| test_optimize_total_path|
-|4|150|4|[('B', 'C', 20, 'broccoli')]|[0]|Ověřuje, že kontroler zaregistruje požadavek do jedné sekundy|P-01|test_time_req_1s|
-|5|150|4|[('A', 'B', 20, 'broccoli')]|[0]|Ověřuje, že plánování cesty netrvá dále než jednu sekundu simulačního času|P-03|test_time_pathing_1s|
-|6|150|4|[('A', 'B', 20, 'broccoli')]|[0]|Ověřuje, že při naložení prioritního materiálu se v tentýž čas vozík přepne do režimu UNLOAD_ONLY|P-04|test_time_Normal_\ to_UO_switch|
+|1|150 |4 |[('A','B',30,'broccoli'), ('B','C',100,'carrot'), ('C','A',10,'daikon'), ('C','D',20,'onion')]| [1, 2, 70, 90] | Kontrolér příjmá požadavky v daných časech, postupně je úspěšně plní (nakládá a vykládá ve správných stanicích) a žádný materiál se nestane prioritním.|1 8 9 13 20 21| test_happy_no_prio|
+|2|150 |4 |[('B','D',150,'broccoli'), ('D','B',30,'carrot'), ('A','B',40,'daikon')]| [1, 2, 70] |Kontrolér příjmá požadavky v daných časech, postupně je úspěšně plní. Materiál `carrot` se stane prioritní. Po cestě na stanici vykládání `carrot` se nenaloží `daikon` kvůli UNLOAD_ONLY, i když má vozík volný slot a kapacitu a `daikon` je na cestě. |1 2 3 5 6 7 8 13 20 22 23| test_happy_prio|
+|3|150 |4 |[('A','B',20,'broccoli'), ('B','A',30,'carrot'), ('B','D',40,'daikon')]| [1, 2, 3] |Testuje zda je cesta skutečně optimální (na lehkém příkladu).|8| test_optimize_total_path|
+|4|150|4|[('B', 'C', 20, 'broccoli')]|[0]|Ověřuje, že kontroler zaregistruje požadavek do jedné sekundy.|P-01|test_time_req_1s|
+|5|150|4|[('A', 'B', 20, 'broccoli')]|[0]|Ověřuje, že plánování cesty netrvá dále než jednu sekundu simulačního času.|P-03|test_time_pathing_1s|
+|6|150|4|[('A', 'B', 20, 'broccoli')]|[0]|Ověřuje, že při naložení prioritního materiálu se v tentýž čas vozík přepne do režimu UNLOAD_ONLY.|P-04|test_time_Normal_\ to_UO_switch|
 |7|150|4|[('A', 'B', 20, 'broccoli')]|[0]|Ověřuje, že při vyložení prioritního materiálu se do sekundy přepne do rrežimu NORMAL.|P-05|test_time_Normal_\ to_UO_switch|
-|8|[50, 150, 500]|[0, 1, 2, 3, 4, 5]|-|-|Postupně zkouší kombinace vozíku. Když je zvolená špatná kombinace, očekává CartError|C-01 C-03 C-04|test_cart_props_slots|
-|9|2|[0, 1, 50, 99.9, 150, 200, 500, 501]|-|-|Postupně zkouší kombinace vozíku. Když je zvolená špatná kombinace, očekává CartError|C-02|test_cart_props_weight|
-|10|500|2|[('A','D',50,'broccoli'), ('A','D',1000,'bigBroccoli'), ('A','D',-1,'bigBroccoli')]|[0]|Vytvoří několik požadavků. U přidávání několika nevalidních požadavků očekává CartError|12|test_cart_props_bad_req|
+|8|[50, 150, 500]|[0, 1, 2, 3, 4, 5]|-|-|Postupně zkouší kombinace vozíku. Když je zvolená špatná kombinace, očekává CartError.|C-01 C-03 C-04|test_cart_props_slots|
+|9|2|[0, 1, 50, 99.9, 150, 200, 500, 501]|-|-|Postupně zkouší kombinace vozíku. Když je zvolená špatná kombinace, očekává CartError.|C-02|test_cart_props_weight|
+|10|500|2|[('A','D',50,'broccoli'), ('A','D',1000,'bigBroccoli'), ('A','D',-1,'bigBroccoli')]|[0]|Vytvoří několik požadavků. U přidávání několika nevalidních požadavků očekává CartError.|12|test_cart_props_bad_req|
 
 Názvy testů `test_time_Normal_to_UO_switch` a `test_time_Normal_to_UO_switch` jsou zalomeny kvůli šířce sloupce
 
@@ -127,12 +127,12 @@ Tastovací cesty jsou vždy přiřazeny alespoň k jednomu konkrétnímu testu. 
 
 
 ### Patch - chyby v implementaci
-Samotná implementace byla ponechána nepozměněna, zde je kolekce nejzávažnějších nalezených chyb
+Samotná implementace byla ponechána nepozměněna, zde je kolekce nejzávažnějších nalezených chyb.
 1. Konstruktor vozíku nemá kvalitní kontrolu vstupu.
 2. Práce s prioritním nákladem má nepřesnosti ve specifikaci a samotná implementace se odlišuje od požadavků. Hlavně mazáním záznamů které jsou v systému přes 120 sekund.
 3. Funkce `find_load_there_single()` nepoužívá atribut priority.
 4. UCS není dostatečně silný plánovací algoritmus pro splnění požadavků. (i když na této malé síti nepracuje špatně).
 5. Pokud jsou dva  požadavky vytvořeny ve stejnou chvíly, je možná že nastane stavová výjmka vozíku.
-6. Položky v sekci [Nejasnosti/chyby ve specifikaci](#nejasnostichyby-ve-specifikaci)
+6. Položky v sekci [Nejasnosti/chyby ve specifikaci](#nejasnostichyby-ve-specifikaci).
 
 
