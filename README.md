@@ -4,5 +4,7 @@
 ### Autor: Bc. Adam Hos \<xhosad00>
 
 ## README je ve složce **`cartctl`**
+(nutná struktura projektu ze zadání)
 
-(kvůli obrázkům)
+## README is in the subfolder **`cartctl`**
+(specific project structure from the assignment required)
